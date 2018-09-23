@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">COM Port App</string>
+    <string name="next">Next</string>
+    <string name="try_again">Try Again</string>
+    <string name="current_device">Your current devices here</string>
+    <string name="start_test">Start Test</string>
+    <string name="enter_message_to_send_a_device">Enter message to send a device</string>
+    <string name="send">Send</string>
+    <string name="mess_received">Mess Received:</string>
+</resources>
