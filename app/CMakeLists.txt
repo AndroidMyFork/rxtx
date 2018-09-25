@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 3.6)
 add_library( rxtxSerial
              SHARED
@@ -9,4 +10,4 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       rxtxSerial/src/${ANDROID_ABI}/librxtxSerialb.so )
+                       app/src/${ANDROID_ABI}/librxtxSerialb.so )

@@ -12,14 +12,20 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+
+import gnu.io.CommPortIdentifier;
+import gnu.io.SerialPort;
 
 public class MainActivity extends AppCompatActivity implements PortAdapter.EventPortClick {
     RecyclerView rcvPort;
     private PortAdapter portAdapter;
-    private List<PortItem> portItemList;
+    private List<PortItem> portItemList = new ArrayList<>();
     private PortItem portItemSelected;
     private static final int REQUEST_PER = 101;
+    private CommPortIdentifier portId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +40,14 @@ public class MainActivity extends AppCompatActivity implements PortAdapter.Event
 //                    return;
 //                }
                 Intent intent = new Intent(MainActivity.this, DevicesActivity.class);
+                intent.putExtra(DevicesActivity.KEY_PORT, portItemSelected);
                 startActivity(intent);
+            }
+        });
+        findViewById(R.id.btn_try).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPort();
             }
         });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -48,10 +61,6 @@ public class MainActivity extends AppCompatActivity implements PortAdapter.Event
         portAdapter = new PortAdapter(portItemList, this);
         rcvPort.setLayoutManager(new LinearLayoutManager(this));
         rcvPort.setAdapter(portAdapter);
-
-        SerialPortFinder serialPortFinder = new SerialPortFinder();
-        String[] path = serialPortFinder.getAllDevicesPath();
-        String[] device = serialPortFinder.getAllDevices();
     }
 
     @Override
@@ -60,7 +69,19 @@ public class MainActivity extends AppCompatActivity implements PortAdapter.Event
     }
 
     public void getPort() {
-
+        Enumeration<CommPortIdentifier> portIdentifiers = CommPortIdentifier.getPortIdentifiers();
+        Toast.makeText(this, "Requesting Ports", Toast.LENGTH_SHORT).show();
+        while (portIdentifiers.hasMoreElements()) {
+            CommPortIdentifier pid = (CommPortIdentifier) portIdentifiers.nextElement();
+            Toast.makeText(this, "Got : " + pid.getName(), Toast.LENGTH_SHORT).show();
+            portId = pid;
+            portItemList.add(new PortItem(pid.getName(), pid.getCurrentOwner()));
+        }
+        if (portItemList.size() != 0)
+            portAdapter.notifyDataSetChanged();
+        if (portId == null) {
+            Toast.makeText(this, "Can't find any Serial Port ", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

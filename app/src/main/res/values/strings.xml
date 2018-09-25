@@ -7,4 +7,5 @@
     <string name="enter_message_to_send_a_device">Enter message to send a device</string>
     <string name="send">Send</string>
     <string name="mess_received">Mess Received:</string>
+    <string name="try_agains">Try again</string>
 </resources>

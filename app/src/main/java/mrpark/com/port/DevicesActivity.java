@@ -23,8 +23,6 @@ import com.ksnet.comm.CommEvent;
 import com.ksnet.comm.CommEventListener;
 import com.ksnet.interfaces.Cat;
 
-import java.io.IOException;
-
 public class DevicesActivity extends Activity implements View.OnClickListener {
     public static final String KEY_PORT = "KEY_PORT";
     private static final byte[] REQ_TRAN_COMPLETE = {(byte) 0x30};
@@ -129,24 +127,21 @@ public class DevicesActivity extends Activity implements View.OnClickListener {
 
     private Cat catCtrl = new Cat(commEventListener);
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_devices);
         portItem = (PortItem) getIntent().getSerializableExtra(KEY_PORT);
-//        SerialPort[] s = SerialPort.getCommPorts();
-//        for (SerialPort serialPort:s){
-//            Log.d("Serial",serialPort.toString());
-//        }
-        openConnection();
-//        if (portItem == null) {
-//            Toast.makeText(this, "Please choose a port", Toast.LENGTH_SHORT).show();
-//            finish();
-//        }
+        if (portItem == null) {
+            Toast.makeText(this, "Undefine port", Toast.LENGTH_SHORT).show();
+            finish();
+        } else
+            openConnection();
 //        usbDevice = getIntent().getParcelableExtra(UsbManager.EXTRA_DEVICE);
 //        UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 //        mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(Constance.PERMISSION[0]), 0);
-//        IntentFilter filter = new IntentFilter(Constance.PERMISSION[0]);
+//        IntentFilter filter = new IntentFilter(Constance.USE_ATTACHED);
 //        registerReceiver(deviceBCReceiver, filter);
 //        if (mUsbManager != null)
 //            if (usbDevice != null)
@@ -170,8 +165,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        IntentFilter intentFilter = new IntentFilter(Constance.PERMISSION[0]);
-        registerReceiver(deviceBCReceiver, intentFilter);
+//        IntentFilter intentFilter = new IntentFilter(Constance.PERMISSION[0]);
+//        registerReceiver(deviceBCReceiver, intentFilter);
     }
 
     @Override
@@ -223,7 +218,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener {
      * Open connection
      */
     private void openConnection() {
-        short result = catCtrl.openPort(portItem == null ? "/dev/tty/USB0" : portItem.getPort(), 38400, 20);
+        short result = catCtrl.openPort(portItem == null ? "/dev/ttyS" : portItem.getPort(), 38400, 20);
         switch (result) {
             case 0:
                 Toast.makeText(this, "Connect success", Toast.LENGTH_SHORT).show();
@@ -306,7 +301,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(deviceBCReceiver);
+//        if (regis)
+//        unregisterReceiver(deviceBCReceiver);
     }
 
     @Override

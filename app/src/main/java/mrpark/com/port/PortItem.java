@@ -6,6 +6,11 @@ public class PortItem implements Serializable{
     String name;
     String port;
 
+    public PortItem(String name, String port) {
+        this.name = name;
+        this.port = port;
+    }
+
     public String getName() {
         return name;
     }
